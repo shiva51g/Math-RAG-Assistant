@@ -94,6 +94,20 @@ except Exception as e:
     st.exception(e)
     st.stop()
 
+
+rephrase_prompt = PromptTemplate.from_template(
+    "Rephrase the following user question into a form that will retrieve the best results from Wikipedia.\n\n"
+    "Original Question: {question}\n"
+    "Rephrased Question:"
+)
+rephrase_chain = LLMChain(llm=llm, prompt=rephrase_prompt)
+
+def rephrase_query(query: str) -> str:
+    try:
+        return rephrase_chain.run(question=query).strip()
+    except Exception:
+        return query  # fallback
+
 # ---------------------------
 # Tools: Wikipedia wrapper (langchain-community), Math chain, Reasoning chain
 # ---------------------------
@@ -381,3 +395,5 @@ with st.expander("💡 Examples / Tips", expanded=False):
 - If the RAG result is empty, try rebuilding the index or uploading more documents.
 """
     )
+
+
